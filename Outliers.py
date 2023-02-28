@@ -1,62 +1,35 @@
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 import numpy as np
 from sklearn.linear_model import RANSACRegressor, HuberRegressor
-from sklearn.model_selection import KFold, cross_val_score, GridSearchCV
-from sklearn.svm import SVR
+from sklearn.model_selection import KFold, GridSearchCV
+import utils
 
-df = pd.read_csv('data/insurance.csv')
+UTILS = utils.Utils()
 
-X = df.drop(['sex', 'children', 'charges'], axis=1)
-X.smoker.replace(['no', 'yes'], [0, 1], inplace=True)
-X.region.replace(['southwest', 'southeast', 'northwest', 'northeast'], [0, 1, 2, 3], inplace=True)
-Y = df['charges']
 
-"""models = {
-    'RANSACR': RANSACRegressor(),
-    'HubberR': HuberRegressor(),
-    'SVR': SVR()
-}
+def anti_outliers_models():
+    X, Y = UTILS.get_x_y()
+    kfold = KFold(n_splits=10, random_state=7, shuffle=True)
 
-params = {
-    'RANSACR': {},
-    'HubberR': {
-        'max_iter': [5000],
-        'epsilon': [1.35]
-    },
-    'SVR': {
-        'kernel': ['linear', 'poly', 'rbf'],
-        'gamma': ['auto'],
-        'C': [1, 10],
-        'epsilon': [0.1]
-
+    models = {
+        'Huber': HuberRegressor(),
+        'RANSAC': RANSACRegressor()
     }
-}"""
+    parameters = {
+        'Huber': {
+            'epsilon': [1.35, 1, 3],
+            'alpha': [0.0001, 0.001,  0.01, 0.1, 1],
+            'max_iter': [5000]
+        },
+        'RANSAC': {
+            'min_samples': [0.1, 0.5, 1, None]
+        }
+    }
 
-kfold = KFold(n_splits=10, random_state=7, shuffle=True)
+    scores = []
 
-"""best_score = 999
-best_model = None
+    for key, value in models.items():
+        grid = GridSearchCV(value, parameters[key], cv=kfold, scoring='r2').fit(X, Y)
+        scores.append((key, grid.best_score_, grid.best_estimator_))
 
-for key, value in models.items():
-    grid = GridSearchCV(value, params[key], cv=kfold).fit(X, Y)
-    score = np.abs(grid.best_score_)
-
-    if score < best_score:
-        best_score = score
-        best_model = grid.best_estimator_"""
-
-#print(best_score, best_model, sep='\n')
-
-models = (
-    ('Huber', HuberRegressor(max_iter=5000, epsilon=1.35)),
-    ('RANSAC', RANSACRegressor())
-)
-
-
-scores = {}
-for name, model in models:
-    scores[name] = np.mean(cross_val_score(model, X, Y, scoring='r2', cv=kfold))
-
-print(scores)
+    return scores

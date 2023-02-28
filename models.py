@@ -35,11 +35,12 @@ class Models:
         models = {i: j for i, j in self.models if i in names_models}
         scores = []
         best_estimators = []
+        info = []
         for key, value in models.items():
             grid = GridSearchCV(value, parameters[key], cv=self.kfold, scoring='r2').fit(self.X, self.Y)
-            scores.append(np.abs(grid.best_score_))
+            scores.append(grid.best_score_)
             best_estimators.append(grid.best_estimator_)
-            info = grid.cv_results_
+            info.append(grid.cv_results_)
 
         return {
             'scores': scores,

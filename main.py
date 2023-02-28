@@ -33,8 +33,14 @@ def run():
 
         return after_tuning_results["cv_results"]
 
-    return pd.DataFrame(tune_models())
+    return tune_models()
 
 
 if __name__ == "__main__":
-    run().to_csv('./data/analysis_data.csv')
+    dicts_tuning_info = run()
+    count = 0
+
+    for dictionary in dicts_tuning_info:
+        df = pd.DataFrame(dictionary)
+        df.to_csv(f'./data/{count}', index=False)
+        count += 1
