@@ -22,7 +22,7 @@ def anti_outliers_models():
             'max_iter': [5000]
         },
         'RANSAC': {
-            'min_samples': [0.1, 0.5, 1, None]
+            'min_samples': [0.1, 0.3, 0.5, None]
         }
     }
 
