@@ -19,7 +19,7 @@ class Models:
 
         self.X, self.Y = utils.Utils().clean_x_y()
 
-        self.X = utils.Utils().standard_scaler(self.X)
+        self.X = utils.Utils().standardized_x(self.X)
 
     def models_results(self):
         results = []

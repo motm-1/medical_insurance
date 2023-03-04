@@ -2,25 +2,17 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import utils as ut
 
 from sklearn.decomposition import PCA, KernelPCA
 from sklearn.linear_model import LinearRegression, Lasso, Ridge
-from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split, KFold, cross_val_score
 from sklearn.metrics import mean_squared_error, r2_score
 
 
 if __name__ == "__main__":
-    df = pd.read_csv('data/insurance.csv')
-    X = df.drop(['charges'], axis=1)
-    Y = df['charges']
-
-    X.sex.replace(['male', 'female'], [0, 1], inplace=True)
-    X.smoker.replace(['no', 'yes'], [0, 1], inplace=True)
-    X.region.replace(['southwest', 'southeast', 'northwest', 'northeast'], [0, 1, 2, 3], inplace=True)
-
-    X_2 = StandardScaler().fit_transform(X.drop(['sex', 'children'], axis=1))
-    X = StandardScaler().fit_transform(X)
+    X, Y = ut.Utils().clean_x_y()
+    X = ut.Utils().standardized_x(X)
 
     X_train, X_test, Y_train, Y_test = train_test_split(
         X, Y,

@@ -1,7 +1,7 @@
 import models as md
 import pandas as pd
 from outliers import anti_outliers_models
-from kneigbors_plotting import knn_plotting
+from final_model import knn_plotting
 
 
 def run():

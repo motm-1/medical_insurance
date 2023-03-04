@@ -11,7 +11,8 @@ from sklearn.metrics import r2_score, mean_squared_error
 def knn_plotting(algorithm, n_neighbors, p, weights):
     knn = KNeighborsRegressor(algorithm=algorithm, n_neighbors=n_neighbors, p=p, weights=weights)
     X, Y = ut.Utils().clean_x_y()
-    X = ut.Utils().standard_scaler(X)
+    X = X[['age', 'bmi', 'smoker','region']]
+    X = ut.Utils().standardized_x(X)
 
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y)
     knn.fit(X_train, Y_train)
@@ -24,3 +25,5 @@ def knn_plotting(algorithm, n_neighbors, p, weights):
     sns.kdeplot(Y_test, color='black', linestyle='dashed')
     sns.kdeplot(y_hat, color='blue')
     plt.show()
+
+    ut.Utils().download_model(knn, 'knn_model.sav')

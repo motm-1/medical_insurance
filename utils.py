@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
-
+import joblib as jbl
 
 class Utils:
     def __init__(self):
@@ -21,8 +21,11 @@ class Utils:
 
         return self.X, self.Y
 
-    def standard_scaler(self, X):
+    def standardized_x(self, X):
 
         X = StandardScaler().fit_transform(X)
 
         return X
+
+    def download_model(self, model, name):
+        jbl.dump(model, name)
