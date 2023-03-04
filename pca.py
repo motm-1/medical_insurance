@@ -12,7 +12,9 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 if __name__ == "__main__":
     X, Y = ut.Utils().clean_x_y()
+    X_2 = X[['age', 'bmi', 'smoker', 'region']]
     X = ut.Utils().standardized_x(X)
+    X_2 = ut.Utils().standardized_x(X_2)
 
     X_train, X_test, Y_train, Y_test = train_test_split(
         X, Y,
