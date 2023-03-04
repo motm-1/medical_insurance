@@ -6,7 +6,6 @@ from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.svm import SVR
-from sklearn.preprocessing import StandardScaler
 
 
 class Models:
@@ -18,9 +17,9 @@ class Models:
 
         self.kfold = KFold(n_splits=10, random_state=7, shuffle=True)
 
-        self.X, self.Y = utils.Utils().get_x_y()
+        self.X, self.Y = utils.Utils().clean_x_y()
 
-        self.X = StandardScaler().fit_transform(self.X)
+        self.X = utils.Utils().standard_scaler(self.X)
 
     def models_results(self):
         results = []

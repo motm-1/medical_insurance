@@ -8,7 +8,7 @@ UTILS = utils.Utils()
 
 
 def anti_outliers_models():
-    X, Y = UTILS.get_x_y()
+    X, Y = UTILS.clean_x_y()
     kfold = KFold(n_splits=10, random_state=7, shuffle=True)
 
     models = {

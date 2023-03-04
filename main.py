@@ -1,10 +1,29 @@
 import models as md
 import pandas as pd
+from outliers import anti_outliers_models
+from kneigbors_plotting import knn_plotting
 
 
 def run():
     models = md.Models()
     results = models.models_results()
+    print(results, '\n')
+    algorithms_names = data_to_tune(results)
+    dicts_tuning_info = tune_models(algorithms_names, models)
+    count = 0
+    print('\n', anti_outliers_models())
+
+    for dictionary in dicts_tuning_info:
+        df = pd.DataFrame(dictionary)
+        df.to_csv(f'./data/{count}', index=False)
+        count += 1
+
+
+def plot_knn():
+    knn_plotting(algorithm='kd_tree', n_neighbors=7, p=2, weights='uniform')
+
+
+def data_to_tune(results):
     names, r2 = (
         [i for i, j, k in results],
         [j for i, j, k in results]
@@ -12,35 +31,30 @@ def run():
     r2_copy = r2.copy()
     r2_copy.sort(reverse=True)
 
-    names_to_tune = [names[r2.index(r2_copy[0])], names[r2.index(r2_copy[1])]]
-    print(names_to_tune)
+    algorithms_names = [names[r2.index(r2_copy[0])], names[r2.index(r2_copy[1])]]
 
-    def tune_models():
-        parameters = {
-            names_to_tune[0]: {
-                'n_neighbors': [3, 5, 7],
-                'weights': ['uniform', 'distance'],
-                'algorithm': ['ball_tree', 'kd_tree', 'brute'],
-                'p': [1, 2]
-            },
-            names_to_tune[1]: {}
-        }
+    return algorithms_names
 
-        after_tuning_results = models.tuning_models(names_to_tune, parameters)
 
-        print(f'Scores: {after_tuning_results["scores"]} \n'
-              f'Estimators: {after_tuning_results["estimators"]}')
+def tune_models(algorithms_names, models):
+    parameters = {
+        algorithms_names[0]: {
+            'n_neighbors': [3, 5, 7],
+            'weights': ['uniform', 'distance'],
+            'algorithm': ['ball_tree', 'kd_tree', 'brute'],
+            'p': [1, 2]
+        },
+        algorithms_names[1]: {}
+    }
 
-        return after_tuning_results["cv_results"]
+    after_tuning_results = models.tuning_models(algorithms_names, parameters)
 
-    return tune_models()
+    print(f'Scores: {after_tuning_results["scores"]} \n'
+          f'Estimators: {after_tuning_results["estimators"]}')
+
+    return after_tuning_results["cv_results"]
 
 
 if __name__ == "__main__":
-    dicts_tuning_info = run()
-    count = 0
-
-    for dictionary in dicts_tuning_info:
-        df = pd.DataFrame(dictionary)
-        df.to_csv(f'./data/{count}', index=False)
-        count += 1
+    # run()
+    plot_knn()
