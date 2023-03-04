@@ -15,7 +15,9 @@ class Models:
                        ('kNN', KNeighborsRegressor()),
                        ('SVR', SVR(gamma='auto', kernel='poly', C=10))]
 
-        self.kfold = KFold(n_splits=10, random_state=7, shuffle=True)
+        self.kfold = KFold(n_splits=10,
+                           random_state=7,
+                           shuffle=True)
 
         self.X, self.Y = utils.Utils().clean_x_y()
 
@@ -25,7 +27,11 @@ class Models:
         results = []
 
         for name, model in self.models:
-            model_score = cross_val_score(model, self.X, self.Y, cv=self.kfold, scoring='r2')
+            model_score = cross_val_score(model,
+                                          self.X,
+                                          self.Y,
+                                          cv=self.kfold,
+                                          scoring='r2')
             results.append((name, model_score.mean(), model_score.std()))
 
         return results
@@ -36,7 +42,10 @@ class Models:
         best_estimators = []
         info = []
         for key, value in models.items():
-            grid = GridSearchCV(value, parameters[key], cv=self.kfold, scoring='r2').fit(self.X, self.Y)
+            grid = GridSearchCV(value,
+                                parameters[key],
+                                cv=self.kfold,
+                                scoring='r2').fit(self.X, self.Y)
             scores.append(grid.best_score_)
             best_estimators.append(grid.best_estimator_)
             info.append(grid.cv_results_)
