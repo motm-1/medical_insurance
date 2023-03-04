@@ -32,4 +32,4 @@ def knn_plotting(algorithm, n_neighbors, p, weights):
     sns.kdeplot(y_hat, color='blue')
     plt.show()
 
-    #ut.Utils().download_model(knn, 'knn_model.sav')
+    #ut.Utils().download_model(knn, './models/knn_model.sav')
